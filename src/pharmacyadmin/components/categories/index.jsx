@@ -29,6 +29,8 @@ const Categories = (props) => {
    // Add Category
    const [id, setId] = useState('');
    const [name, setName] = useState("");
+
+   
    const Jobbtn = async (e) => {
       e.preventDefault();
       const formData = new FormData();
@@ -73,12 +75,12 @@ const Categories = (props) => {
    // Update Category
    const handleUpdate = (id, e) => {
       e.preventDefault();
-    edit_action_medicene(id, name).then((result)=>{
-      console.log(result,"jlllllllllllllrjjjjjjjjjjjjjjjjjjjjjjjj");
-      setCount(count+1)
-    })
-      
-console.log(count,"vipin ka count");
+      edit_action_medicene(id, name).then((result) => {
+         console.log(result, "jlllllllllllllrjjjjjjjjjjjjjjjjjjjjjjjj");
+         setCount(count + 1)
+      })
+
+      console.log(count, "vipin ka count");
    }
    // Delete Category
    const [deleteStatus, setDeleteStatus] = useState([]);

@@ -20,14 +20,6 @@ const Pharmacyregister = (props) => {
   //   console.log(values);
   // }
 
-  
-
-
-
-
-
-
-
   // pp 
 
   const history = useHistory();
@@ -43,26 +35,26 @@ const Pharmacyregister = (props) => {
     password: yup.string().min(8).required(),
     name: yup.string().required(),
     email: yup.string().email().required(),
-    phone: yup.string().min(10).required(),
+   
   })
 
 
-  const HandleClick =  (values) => {
+  const HandleClick = (values) => {
 
-    console.log("priyanka regi pharmacy", values.phone, values.password, values.name, values.email)
+    console.log("priyanka regi pharmacy", values.phone, values.password, values.name, values.email,values.role)
 
-
-    let pharData = phar (values);
-    if(pharData){
-      pharData.then((data)=>{
+    // let role = "pharmacy";
+    let pharData = phar(values);
+    if (pharData) {
+      pharData.then((data) => {
         console.log(data)
-        const {token,messege} = data;
-        Cookies.set('pharmToken',token);
+        const { token, messege } = data;
+        Cookies.set('pharmToken', token);
         alert(`${messege}`);
-        history.push("/pharmacyadmin");
+        history.push("/login");
       })
-      
-    }else{
+
+    } else {
       alert("Api's Error OCCUR");
     }
 
@@ -90,8 +82,8 @@ const Pharmacyregister = (props) => {
     //   console.log("Invalid Registration");
     // }
   }
- 
-  
+
+
   const { handleSubmit, values, handleChange, errors, handleBlur, touched, isValid, dirty } = useFormik({
     initialValues: {
       name: "",
@@ -106,7 +98,7 @@ const Pharmacyregister = (props) => {
   });
 
 
- 
+
 
   return (
     <>
@@ -200,9 +192,7 @@ const Pharmacyregister = (props) => {
                           <label className="focus-label" htmlFor="numbers">
                             Phone
                           </label>
-                          {
-                            touched.phone && errors.phone && <div className='text-danger'>{errors.phone}</div>
-                          }
+                         
                         </div>
 
 

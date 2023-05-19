@@ -146,6 +146,10 @@ const AppContainer = function (props) {
 
          <Route path="/login" exact component={LoginContainer} />
            
+
+           {/* purchase */}
+
+           
             <Route path="/admin">
                 <RouteProtect Component={AppUniversal} />
               </Route>

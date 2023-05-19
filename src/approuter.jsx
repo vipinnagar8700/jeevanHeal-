@@ -12,7 +12,7 @@ const AppRouter = (props) => {
     const [isAuth, setIsAuth] = useState("user")
     return(
         <Booking>
-        <PharmacyUser>
+    
         <Router type="application/json" basename={`${config.publicPath}`}>
 
            
@@ -22,7 +22,7 @@ const AppRouter = (props) => {
             </Appcontext.Provider>
             
         </Router>
-        </PharmacyUser>
+     
         </Booking>
     );
     

@@ -57,11 +57,11 @@ const PharmacyadminApp = function (props) {
 					<Route path="/pharmacyadmin/purchase" exact component={Purchase} />
 					<Route path="/pharmacyadmin/order" exact component={Order} />
 					<Route path="/pharmacyadmin/add-purchase" exact component={AddPurchase} />
-					<Route path="/pharmacyadmin/edit-purchase" exact component={EditPurchase} />
+					<Route path="/pharmacyadmin/edit-purchase/:p_id" exact component={EditPurchase} />
 					<Route path="/pharmacyadmin/sales" exact component={Sales} />
 					<Route path="/pharmacyadmin/supplier" exact component={Supplier} />
 					<Route path="/pharmacyadmin/add-supplier" exact component={AddSupplier} />
-					<Route path="/pharmacyadmin/edit-supplier" exact component={EditSupplier} />
+					<Route path="/pharmacyadmin/edit-supplier/:p_id" exact component={EditSupplier} />
 					<Route path="/pharmacyadmin/transactions-list" exact component={TransactionList} />
 					<Route path="/pharmacyadmin/invoice" exact component={Invoice} />
 					<Route path="/pharmacyadmin/reportinvoice" exact component={ReportInvoice} />

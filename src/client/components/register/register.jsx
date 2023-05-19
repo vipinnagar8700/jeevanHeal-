@@ -4,14 +4,11 @@ import loginBanner from "../../assets/images/login-banner.png";
 import Header from "../header";
 import Footer from "../footer";
 import config from "config";
-import PharmacyHoc from "../../../HOC/PharmacyHoc";
 import { useFormik } from "formik";
 import * as yup from 'yup'
 
 const Register = (props) => {
-  const {puser , setPuser , pinput , setPinput} = props
-
-  
+    
 
   
 
@@ -240,4 +237,4 @@ const Register = (props) => {
   );
 };
 
-export default  PharmacyHoc(Register);
+export default  Register;

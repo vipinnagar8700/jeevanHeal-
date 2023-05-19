@@ -1,11 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import SidebarNav from '../sidebar';
 import { Product1 } from "./image"
+import FeatherIcon from 'feather-icons-react';
 import { useFormik } from "formik";
 import * as yup from 'yup'
-import FeatherIcon from 'feather-icons-react';
-const AddProduct = (props) => {
+import Cookies from "js-cookie";
 
+import { addProduct } from "../../../PharmacyApi's/Pharmacy";
+import { Link , useHistory} from 'react-router-dom';
+
+
+
+
+
+const AddProduct = (props) => {
+const history = useHistory();
   const [category, setCategory] = useState([])
   const getData = () => {
     fetch('https://jeevan.studiomyraa.com/api/medicene_category')
@@ -17,72 +26,78 @@ const AddProduct = (props) => {
     getData()
   }, [])
 
-  const [category_id, setCategory_id] = useState();
-  const [product_name, setProduct_name] = useState("");
-  const [price, setPrice] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [discount, setDiscount] = useState("");
-  const [description, setDescription] = useState("");
-  const [selectedImg, setSelectedImg] = useState();
-
-  const Jobbtn = async (e) => {
-    e.preventDefault();
-    // let jobData = { category_id, product_name, price, quantity, discount, description, img };
-    const formData = new FormData();
-    formData.append("img", selectedImg);
-    formData.append("category_id", category_id);
-    formData.append("product_name", product_name);
-    formData.append("price", price);
-    formData.append("quantity", quantity);
-    formData.append("discount", discount);
-    formData.append("description", description);
-    const res = await fetch("https://jeevan.studiomyraa.com/api/add_product", {
-      method: 'POST',
-      body: formData
-    })
-    const data = await res.json();
-    if (data.status === 'success') {
-      window.alert(data.message);
-      navigate("/");
-    } else {
-      window.alert("Invalid Registration");
-    }
-  }
 
 
-  const fileRef = useRef(null)
 
-  // Imp
   const schema = yup.object().shape({
     productName: yup.string().required(),
-    category: yup.string().required(),
+    categoryName: yup.string().required(),
     price: yup.string().required(),
-    quality: yup.string().required(),
+    quantity: yup.string().min(1).required(),
     discount: yup.string().required(),
+    image: yup.string().required(),
     description: yup.string().required(),
+
   })
 
-
   const HandleClick = (values) => {
-    console.log("form data", values)
+    console.log("Data That we Add", values.productName, values.categoryName, values.price, values.quantity, values.description, values.image, values.discount);
 
-  }
+    let token = Cookies.get('pharmToken');
+    console.log(token, "token Mil ga");
+    if (token) {
+      const productData = addProduct(values);
+      console.log(productData, "Product Data");
 
-  console.log("form data", values)
+      if (productData) {
+        productData.then((data) => {
+          console.log(data);
+          const { message } = data;
+          alert(`${message}`);
+          history.push("/pharmacyadmin");
+        });
+      } else {
+        alert("Api's Error OCCUR");
+      }
+    } else {
+      alert("Token is missing");
+    }
+    // if (productData) {
+    //   productData.then((data) => {
+    //     console.log(data);
+    //     const { token, messege } = data;
+    //     Cookies.get('pharmToken', token);
+    //     alert(`${messege}`);
+    //     history.push("/pharmacyadmin");
+    //   });
+    // } else {
+    //   alert("Api's Error OCCUR");
+    // }
+  };
 
-  const { handleSubmit, setFieldValue, values, handleChange, errors, handleBlur, touched, isValid, dirty } = useFormik({
+  const {
+    setFieldValue,
+    handleSubmit,
+    values,
+    handleChange,
+    errors,
+    handleBlur,
+    touched,
+    isValid,
+    dirty,
+  } = useFormik({
     initialValues: {
       productName: "",
       price: "",
-      quality: "",
-      category:"",
+      categoryName: "",
+      quantity: "",
       discount: "",
       description: "",
-      image: null,
+      image: "null",
     },
-    onSubmit: HandleClick,
     validationSchema: schema,
-    validateOnMount: true
+    validateOnMount: true,
+    onSubmit: HandleClick
   });
 
 
@@ -97,13 +112,11 @@ const AddProduct = (props) => {
             <div className="row">
               <div className="col-md-8">
                 <h5 className="mb-3">Add Product</h5>
-                <form className="supplier-form" onSubmit={handleSubmit}>
+                <form className="supplier-form" onSubmit={handleSubmit} enctype="multipart/form-data">
                   <div className="row">
                     <div className="col-md-6">
                       <div className="form-group form-focus">
-                        <input type="text" className="form-control floating" name="productName"
-                          value={values.productName}
-                          onChange={handleChange}
+                        <input type="text" className="form-control floating" value={values.productName} name="productName" onChange={handleChange}
                           onBlur={handleBlur} />
                         <label className="focus-label">
                           Product Name <span className="text-danger">*</span>
@@ -115,19 +128,29 @@ const AddProduct = (props) => {
                     </div>
                     <div className="col-md-6">
                       <div className="form-focus">
-                        <select className="form-control floating categorySelect" style={{ paddingTop: "0px", appearance: "auto" }} onChange={(e) => setCategory_id(e.target.value)} >
-                          <option value={values.category}
-                            onChange={handleChange}
-                            onBlur={handleBlur} >Category</option>
-                          {category && category.length > 0 && category.map((userObj, index) => (
-                            <option key={userObj.id} value={userObj.id}>{userObj.name}</option>
-                          ))}
+                        <select
+                          className="form-control floating categorySelect"
+                          value={values.categoryName}
+                          name="categoryName"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          style={{ paddingTop: "0px", appearance: "auto" }}
+                        >
+                          <option value="">Category</option>
+                          {category &&
+                            category.length > 0 &&
+                            category.map((userObj) => (
+                              <option key={userObj.id} value={userObj.id}>
+                                {userObj.name}
+                              </option>
+                            ))}
                         </select>
-                        {
-                          touched.category && errors.category && <div className='text-danger'>{errors.category}</div>
-                        }
+                        {touched.categoryName && errors.categoryName && (
+                          <div className="text-danger">{errors.categoryName}</div>
+                        )}
                       </div>
                     </div>
+
                     <div className="col-md-6">
                       <div className="form-group form-focus">
                         <input type="text" className="form-control floating" name="price"
@@ -144,25 +167,19 @@ const AddProduct = (props) => {
                     </div>
                     <div className="col-md-6">
                       <div className="form-group form-focus">
-                        <input type="text"
-                          className="form-control floating"
-                          name="quality"
-                          value={values.quality}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                        />
+                        <input type="text" className="form-control floating" name="quantity" value={values.quantity} onChange={handleChange}
+                          onBlur={handleBlur} />
                         <label className="focus-label">
                           Quantity <span className="text-danger">*</span>
                         </label>
                         {
-                          touched.quality && errors.quality && <div className='text-danger'>{errors.quality}</div>
+                          touched.quantity && errors.quantity && <div className='text-danger'>{errors.quantity}</div>
                         }
                       </div>
                     </div>
                     <div className="col-md-6">
                       <div className="form-group form-focus">
-                        <input type="text" className="form-control floating" name="discount"
-                          value={values.discount}
+                        <input type="text" className="form-control floating" value={values.discount} name="discount"
                           onChange={handleChange}
                           onBlur={handleBlur} />
                         <label className="focus-label">
@@ -178,11 +195,10 @@ const AddProduct = (props) => {
                         <textarea
                           className="form-control bg-grey floating"
                           defaultValue={""}
-                          name="description"
                           value={values.description}
+                          name="description"
                           onChange={handleChange}
                           onBlur={handleBlur}
-
                         />
                         <label className="focus-label">
                           Descriptions <span className="text-danger">*</span>
@@ -194,15 +210,24 @@ const AddProduct = (props) => {
                     </div>
                     <div className="col-md-12">
                       <div className="form-group">
-                        <div className="change-photo-btn  bg-grey">
+                        <div className="change-photo-btn bg-grey">
                           <div>
                             <FeatherIcon icon="upload" />
                             <p>Upload File</p>
-                            {/* {img} */}
                           </div>
-
-                          <input name='image'  type="file"  ref={fileRef}/>
-
+                          <input
+                            type="file"
+                            name="image"
+                            className="upload"
+                            onChange={(event) => {
+                              const file = event.target.files[0];
+                              if (file) {
+                                setFieldValue("image", file);
+                              }
+                            }}
+                          />
+                          {/* Show error message if needed */}
+                          {/* <ErrorMessage name="image" component="div" className="text-danger" /> */}
                         </div>
                       </div>
                     </div>

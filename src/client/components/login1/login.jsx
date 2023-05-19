@@ -18,7 +18,7 @@ const LoginContainer = (props) => {
 
   const [phone, setphone] = useState('');
   const [password, setPassword] = useState('');
-
+console.log(phone,password,"Vipinnnnnnnnnnnnnnnnnnnnn");
   useEffect(() => {
    
     document.body.classList.add("account-page");

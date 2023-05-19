@@ -17,29 +17,18 @@ const LoginContainer = (props) => {
   const [email_phone, setEmail_phone] = useState('');
   const [password, setPassword] = useState('');
   const [cookies, setCookie] = useCookies(['user']);
-
+  // alert("vipin ");
   useEffect(() => {
 
     document.body.classList.add("account-page");
 
     return () => document.body.classList.remove("account-page");
   }, []);
+console.log(email_phone,password,"jkgiyf");
+  const HandleClick = async (e) =>  {
+    e.preventDefault();
 
-  const HandleClick = async (values) =>  {
 
-    console.log("priyanka", values.email_phone, values.password)
-
-
-    loginaction(values.email_phone, values.password).then((data) => {
-      console.log(data, "rinkiii");
-      if (data.token || data.user) {
-        alert(data.token)
-        alert(data.user)
-        setcookie('login1', data.token)
-        setlocalstroage('login1', data.user)
-        history.push("doctor/doctor-dashboard");
-      }
-    })
 
     const res = await fetch("https://jeevan.studiomyraa.com/api/login_action", {
       method: "POST",
@@ -108,22 +97,7 @@ const LoginContainer = (props) => {
 
 
 
-  const schema = yup.object().shape({
-    email_phone: yup.string().email().required(),
-    password: yup.string().min(8).required(),
-
-  })
-
-  const { handleSubmit, values, handleChange, errors, handleBlur, touched, isValid, dirty } = useFormik({
-    initialValues: {
-      email_phone: "",
-      password: "",
-    },
-    onSubmit: HandleClick,
-    validationSchema: schema,
-    validateOnMount: true
-  });
-
+  
   return (
     <>
       <Header {...props} />
@@ -163,24 +137,22 @@ const LoginContainer = (props) => {
                           Login <span>JeevanHeal</span>
                         </h3>
                       </div>
-                      <form onSubmit={handleSubmit}>
+                      <form >
                         <div className="form-group form-focus">
                           <input
                             className="form-control floating"
                             type="text"
                             name="email_phone"
-                            value={values.email_phone}
-                            onChange={handleChange}
-                            onBlur={handleBlur} />
+                            value={email_phone}
+                            onChange={(e)=>{
+                              setEmail_phone(e.target.value)
+                            }}
+                           />
 
 
 
 
                           <label className="focus-label">Phone or Email</label>
-
-                          {
-                            touched.email_phone && errors.email_phone && <div className='text-danger'>{errors.email_phone}</div>
-                          }
 
                         </div>
 
@@ -189,18 +161,16 @@ const LoginContainer = (props) => {
                             className="form-control floating"
                             type="password"
                             name="password"
-                            value={values.password}
-                            onChange={handleChange}
-                            onBlur={handleBlur} />
+                            value={password}
+                            onChange={(e)=>{
+                              setPassword(e.target.value)
+                            }}
+                           />
 
                           
                           <label className="focus-label">Password</label>
 
-                          
-                          {
-                            touched.password && errors.password && <div className='text-danger'>{errors.password}</div>
-                          }
-
+                        
                         </div>
                         <div className="text-end">
                           <Link to="/forgot-password" className="forgot-link">
@@ -210,6 +180,7 @@ const LoginContainer = (props) => {
                         <button
                           className="btn btn-primary w-100 btn-lg login-btn"
                           type="submit"
+                          onClick={HandleClick}
                          
                         >
                           Login

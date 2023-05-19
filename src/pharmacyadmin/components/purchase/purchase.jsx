@@ -7,32 +7,53 @@ import 'react-data-table-component-extensions/dist/index.css';
 import FeatherIcon from 'feather-icons-react';
 import { product1, product2, product3, product4, product5, product6 } from '../imagepath';
 import SidebarNav from '../sidebar';
+import Cookies from 'js-cookie';
 
-const Purchase = () => {
-  const [post, setPost] = useState()
+const Purchase = (props) => {
+  const [post, setPost] = useState([])
+  const getData = () => {
+    let token = Cookies.get("pharmToken")
+    var myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+    
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+    
+    fetch("https://jeevan.studiomyraa.com/api/view_purchase", requestOptions)
+    .then((res) => res.json())
+    .then((json) => setPost(json.data))
+    .catch((e) => console.log(e))
+  }
+
   useEffect(() => {
-    Jobbtn();
+    getData()
   }, [])
-  const Jobbtn = async () => {
-    const tokenGet = localStorage.getItem("login2");
-    const token = JSON.parse(tokenGet).token;
-    console.log(token)
-    const res = await fetch("https://jeevan.studiomyraa.com/api/view_purchase", {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
-    const data = await res.json();
-    setPost(data.data)
-  };
-  
-// console.log(post)
+  console.log(post)
   const [show1, setShow1] = useState(false);
   const toggleFilterMenu1 = () => {
     console.log(show1)
     setShow1(!show1)
   }
+
+  // Delete Category
+  const [deleteStatus, setDeleteStatus] = useState([]);
+  const handleDelete = (id) => {
+     fetch('https://jeevan.studiomyraa.com/api/delete_purchase/' + id, { method: 'DELETE' })
+        .then((res) => res.json())
+        .then((json) => setDeleteStatus(json))
+        .catch((e) => console.log(e))
+  }
+  if (deleteStatus.status == 'success') {
+     getData()
+  }
+
+
+
+  // Table Start
   const data = post
   const columns = [
     {
@@ -45,11 +66,11 @@ const Purchase = () => {
     {
       name: ' Name',
       sortable: true,
-      cell: row => <Media ><Media.Body className="table-avatar"><Link className="avatar avatar-sm me-2 user-dt" to="#" data-bs-target="#editModal" data-bs-toggle="modal"></Link><span
-        data-bs-target="#editModal"
-        data-bs-toggle="modal"
-        className="user-name">{row.name}
-      </span></Media.Body></Media>,
+      cell: row => <Media ><Media.Body className="table-avatar"><Link className="avatar avatar-sm me-2 user-dt" to="#" data-bs-target="#editModal" data-bs-toggle="modal"></Link><span 
+			data-bs-target="#editModal"
+			data-bs-toggle="modal"
+			className="user-name">{row.name}
+           </span></Media.Body></Media>,
       width: "400px",
 
     },
@@ -76,7 +97,7 @@ const Purchase = () => {
     },
     {
       name: 'quantity',
-      cell: row => <Media><span className={`btn btn-sm ${row.quantity == "THERE ONLY 7" ? 'bg-danger-light' : row.quantity == "THE ONLY 5" ? 'bg-danger-light' : row.quantity == "THE ONLY 2" ? 'bg-danger-light' : ''}`} >{row.quantity}</span></Media>,
+      cell: row => row.quantity,//<Media><span className={`btn btn-sm ${row.quantity == "THERE ONLY 7" ? 'bg-danger-light' : row.quantity == "THE ONLY 5" ? 'bg-danger-light' : row.quantity == "THE ONLY 2" ? 'bg-danger-light' : ''}`} >{row.quantity}</span></Media>,
       sortable: true,
       width: "250px",
     },
@@ -102,18 +123,19 @@ const Purchase = () => {
       cell: row => (<div className="actions">
         <a
           className="text-black"
-          href={`/pharmacyadmin/edit-product/${row.id}`}
+          href={`/pharmacyadmin/edit-purchase/${row.id}`}
         >
           <i className='me-1'><FeatherIcon icon="edit-3" /></i> Edit
         </a>
         <Link
-          className="text-danger"
-          data-tag="allowRowEvents"
-          to="#"
-          onClick={e => handleDelete(row.id)}
-        >
-          <i className='me-1'><FeatherIcon icon="trash-2" /></i> Delete
-        </Link>
+            className="text-danger"
+            data-tag="allowRowEvents"
+            to="#"
+            onClick={e => handleDelete(row.id)}
+         >
+            <i className='me-1'><FeatherIcon icon="trash-2" /></i> Delete
+         </Link>
+        
       </div>),
       width: "450px",
 

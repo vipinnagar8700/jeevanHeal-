@@ -1,28 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import SidebarNav from '../sidebar';
-import {Product1} from "./image"
+import { Product1 } from "./image"
 import SelectField from '../commoncomponent/selectfield';
-import { Link } from "react-router-dom";
+import { Link,useHistory,useParams } from "react-router-dom";
+import { edit_PurchaseData } from "../../../PharmacyApi's/Pharmacy";
+const EditPurchase = (props) => {
 
-const EditPurchase =(props)=>{
+  let history = useHistory();
+  const { p_id } = useParams();
+  console.log(p_id)
+  const [editProductData, setEditProductData] = useState(false);
+  console.log(editProductData, "Ya uppar vala edit product ha ");
+  const { id, name,phone,email,address,company, img } = editProductData;
+  console.log(id, name,phone,email,address,company, img, "sahi ha");
 
-  const [blogtype, setBlogType] = useState([
-    { label: "category", value: 'category' },
-    { label: "Injuries", value: 'Injuries' },
-    { label: "Cancer", value: 'Cancer' },  
-     { label: "Animal diseases", value: 'Animal diseases' },
-    { label: "Growth disorders", value: 'Growth disorders' },
-    { label: "Rare diseases", value: 'Rare diseases' },      
-    { label: "Neoplasms", value: 'Neoplasms' },
-    { label: "Inflammations", value: 'Inflammations' },
-    { label: "Sleep disorders", value: 'Sleep disorders' },
-    { label: "Infectious diseases", value: 'Infectious diseases' },
-    { label: "Phytopatholog", value: 'Phytopatholog' },               
-  ]);
-  const [stateValue, setStateValue] = useState()
+  useEffect(() => {
 
-        return(
-      <>
+    let data = edit_PurchaseData(p_id);
+    if (data) {
+      data.then((data) => {
+        setEditProductData(data);
+        console.log(data);
+      })
+    }
+  }, []);
+  if (!editProductData) {
+    return <h1>...........Loading</h1>
+  }
+
+  return (
+    <>
       <SidebarNav />
       {/* Page Wrapper */}
       <div className="page-wrapper">
@@ -45,30 +52,29 @@ const EditPurchase =(props)=>{
               <div className="card">
                 <div className="card-body custom-edit-service">
                   {/* Add Medicine */}
-                  <form method="post" encType="multipart/form-data" autoComplete="off" id="update_service" action="/pharmacyadmin/purchase">
+                  <form encType="multipart/form-data" autoComplete="off" id="update_service" >
                     <input type="hidden" name="csrf_token_name" defaultValue="0146f123a4c7ae94253b39bca6bd5a5e" />
                     <div className="service-fields mb-3">
                       <div className="row">
                         <div className="col-lg-6">
                           <div className="form-group">
                             <label>Medicine Name<span className="text-danger">*</span></label>
-                            <input type="hidden" name="brand_name" id="brand_name" defaultValue={18} />
+                            <input type="hidden" name="brand_name" id="brand_name" />
                             <input className="form-control" type="text" name="brand_name" id="brand_name" defaultValue required />
                           </div>
                         </div>
                         <div className="col-lg-6">
-                           <div className="form-focus">
-                          <SelectField 
-                             
+                          <div className="form-focus">
+                            <SelectField
+
                               options={blogtype}
                               errorMessage={""}
                               error={false}
                               label={false}
                               placeholder={"category"}
                               isRequired={false}
-                              onChangeValue={(value) => setStateValue(value?.value) }
                             />
-                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -77,14 +83,14 @@ const EditPurchase =(props)=>{
                         <div className="col-lg-6">
                           <div className="form-group">
                             <label>Price<span className="text-danger">*</span></label>
-                            <input type="hidden" name="Price" id="Price" defaultValue={18} />
+                            <input type="hidden" name="Price" id="Price" />
                             <input className="form-control" type="text" name="Price" id="Price" defaultValue="$" required />
                           </div>
                         </div>
                         <div className="col-lg-6">
                           <div className="form-group">
                             <label>Quantity<span className="text-danger">*</span></label>
-                            <input type="hidden" name="quantity" id="quantity" defaultValue={18} />
+                            <input type="hidden" name="quantity" id="quantity" />
                             <input className="form-control" type="text" name="quantity" id="quantity" defaultValue required />
                           </div>
                         </div>
@@ -107,7 +113,7 @@ const EditPurchase =(props)=>{
                             <i className="fas fa-cloud-upload-alt" />
                             <span>Upload Product Images *</span>
                             <input type="file" name="images[]" id="images" multiple accept="image/jpeg, image/png, image/gif," />
-                          </div>	
+                          </div>
                           <div id="uploadPreview">
                             <ul className="upload-wrap">
                               <li>
@@ -127,14 +133,14 @@ const EditPurchase =(props)=>{
                   {/* /Add Medicine */}
                 </div>
               </div>
-            </div>			
+            </div>
           </div>
-        </div>			
+        </div>
       </div>
       {/* /Page Wrapper */}
-             </>         
-        )
-     }
-  
-  
- export default EditPurchase; 
+    </>
+  )
+}
+
+
+export default EditPurchase; 

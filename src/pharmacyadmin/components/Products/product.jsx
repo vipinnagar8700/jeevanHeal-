@@ -81,7 +81,7 @@ const ProductName =(props)=>{
 		},		
     {
 			name: 'Quantity',
-      cell: row => <Media><span className={`btn btn-sm ${ row.quantity == "THERE ONLY 7" ? 'bg-danger-light' : row.Quantity == "THE ONLY 5" ? 'bg-danger-light' : row.Quantity == "THE ONLY 2" ? 'bg-danger-light':'' }`} >{row.Quantity}</span> <Media.Body> </Media.Body></Media>,
+      selector: row=>row.quantity, // <Media><span className={`btn btn-sm ${ row.quantity == "THERE ONLY 7" ? 'bg-danger-light' : row.Quantity == "THE ONLY 5" ? 'bg-danger-light' : row.Quantity == "THE ONLY 2" ? 'bg-danger-light':'' }`} >{row.Quantity}</span> <Media.Body> </Media.Body></Media>,
 			sortable: true,	
 			width:"250px",			
 		},	
