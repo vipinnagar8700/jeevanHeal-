@@ -1,9 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IMG01 } from "./img";
 import Header from "../../../header";
 import Footer from "../../../footer";
+import { invoicesubmit } from "../../../../../API/Singledoctor/docter";
 
+import Bookingdata from "../../../../../Context/Bookingdata";
 const InvoiceView = (props) => {
+  const {bookingdata,setbookingdata}=props
+  const[invoice,setinvoice]=useState(false)
+  if(!bookingdata){
+    return <h1>Loading.....</h1>
+  }
+  useEffect(()=>{
+  invoicesubmit(bookingdata.booking_id).then((data)=>{
+    setinvoice(data)
+      console.log(data,"m;kdjfsihgirohgreugherou");
+    })
+   
+  
+  },[bookingdata])
+  console.log(invoice,";kdshguerghrsughroisughwsroihwsighieiieieiei");
+ if(!invoice){
+  return <h1>Loading......</h1>
+ }
+ console.log(invoice.data,"sfjlegfiuwegfy");
+ const{doctor,payment,patient,date,email,
+ }=invoice.data
+  const [doctorData]=  doctor;
+  const [paymentData] = payment;
+  const [patientData]= patient;
+  console.log(doctorData,patientData,paymentData);
+  
   return (
     <div>
       <Header {...props} />
@@ -24,7 +51,7 @@ const InvoiceView = (props) => {
                         <strong>Order:</strong> #00124
                       </p>
                       <p className="invoice-details">
-                        <strong>Issued:</strong> 20/07/2019
+                        <strong>Issued:</strong> {date && date}
                       </p>
                     </div>
                   </div>
@@ -36,8 +63,10 @@ const InvoiceView = (props) => {
                       <div className="invoice-info">
                         <strong className="customer-text">Invoice From</strong>
                         <p className="invoice-details invoice-details-two">
-                          Dr. Darren Elder 806 Twin Willow Lane, Old Forge
-                          Newyork, USA
+                         { doctorData.fullname  && doctorData.fullname}
+                        </p>
+                        <p className="invoice-details invoice-details-two">
+                        { doctorData.address && doctorData.address}
                         </p>
                       </div>
                     </div>
@@ -45,8 +74,20 @@ const InvoiceView = (props) => {
                       <div className="invoice-info invoice-info2">
                         <strong className="customer-text">Invoice To</strong>
                         <p className="invoice-details">
-                          Walter Roberson 299 Star Trek Drive, Panama City,
-                          Florida, 32405, USA
+                          {patientData.fullname && patientData.fullname}
+                    
+                        </p>
+                        <p className="invoice-details">
+                          {patientData.email && patientData.email}
+                    
+                        </p>
+                        <p className="invoice-details">
+                          {paymentData.transaction_id && paymentData.transaction_id}
+                    
+                        </p>
+                        <p className="invoice-details">
+                          {paymentData.status && paymentData.status}
+                    
                         </p>
                       </div>
                     </div>
@@ -61,7 +102,7 @@ const InvoiceView = (props) => {
                           Payment Method
                         </strong>
                         <p className="invoice-details invoice-details-two">
-                          Debit Card XXXXXXXXXXXX-2541 HDFC Bank
+                          {paymentData.card_number && paymentData.card_number}
                         </p>
                       </div>
                     </div>
@@ -117,7 +158,7 @@ const InvoiceView = (props) => {
                             <tr>
                               <th>Total Amount:</th>
                               <td>
-                                <span>$315</span>
+                                <span>{paymentData.payment && paymentData.payment}</span>
                               </td>
                             </tr>
                           </tbody>
@@ -148,4 +189,4 @@ const InvoiceView = (props) => {
   );
 };
 
-export default InvoiceView;
+export default   Bookingdata( InvoiceView);

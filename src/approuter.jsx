@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import config from 'config';
 import Booking from './Context/Booking.js';
 import PharmacyUser  from './Context/PharmacyUser.js';
+import Registerauth from './Context/Registerauth.js';
 
 export const Appcontext = createContext()
 
@@ -11,8 +12,9 @@ const AppRouter = (props) => {
 
     const [isAuth, setIsAuth] = useState("user")
     return(
+     <Registerauth>
         <Booking>
-    
+   
         <Router type="application/json" basename={`${config.publicPath}`}>
 
            
@@ -24,6 +26,7 @@ const AppRouter = (props) => {
         </Router>
      
         </Booking>
+        </Registerauth>
     );
     
 }

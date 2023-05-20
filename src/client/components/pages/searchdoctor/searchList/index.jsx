@@ -28,9 +28,14 @@ const SearchList = ({bookingdata,setbookingdata}) => {
     const getData = () => {
         fetch('https://jeevan.studiomyraa.com/api/get_all_doctors')
             .then((res) => res.json())
-            .then((json) => setPost(json))
+            .then((json) =>{
+                console.log(json,"DoctorDate")
+             setPost(json)
+            })
+           
             .catch((e) => console.log(e))
     }
+    
     const loadMore = () => {
         setIndex(index + 5)
         console.log(index)

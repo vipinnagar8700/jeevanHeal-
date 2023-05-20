@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import loginBanner from "../../assets/images/login-banner.png";
 import config from "config";
@@ -11,13 +11,16 @@ import { loginaction } from "../../../API/login";
 import { setlocalstroage } from "../../../Helper/localstorage";
 import { useFormik } from 'formik';
 import * as yup from 'yup'
+import { Registerc } from "../../../Context/Registerauth";
 
 const LoginContainer = (props) => {
   const history = useHistory();
   const [email_phone, setEmail_phone] = useState('');
   const [password, setPassword] = useState('');
   const [cookies, setCookie] = useCookies(['user']);
+   let {pat,setpat} = useContext(Registerc)
   // alert("vipin ");
+  console.log(pat,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
   useEffect(() => {
 
     document.body.classList.add("account-page");
@@ -47,6 +50,7 @@ console.log(email_phone,password,"jkgiyf");
       window.alert("Login Succesfully");
       console.log("Login Succesfully");
       setlocalstroage('login2', data)
+      setpat("ramesh");
 
       history.push("/patient/dashboard");
       

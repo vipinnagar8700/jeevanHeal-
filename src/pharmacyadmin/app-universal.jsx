@@ -36,6 +36,7 @@ import SocialSettings from './components/settings/SocialSettings';
 import SocialLinks from './components/settings/SocialLinks';
 import SeoSettings from './components/settings/SeoSettings';
 import OthersSettings from './components/settings/OthersSettings';
+import EditUpdate from './components/supplier/EditUpdate';
 
 const PharmacyadminApp = function (props) {
     return (
@@ -74,7 +75,8 @@ const PharmacyadminApp = function (props) {
 					<Route path="/pharmacyadmin/social-links" exact component={SocialLinks} />
 					<Route path="/pharmacyadmin/seo-settings" exact component={SeoSettings} />
 					<Route path="/pharmacyadmin/others-settings" exact component={OthersSettings} />
-					<Route path="/pharmacyadmin/localization-details" exact component={LocalizationDetails} />		
+					<Route path="/pharmacyadmin/localization-details" exact component={LocalizationDetails} />	
+					<Route path="/pharmacyadmin/EditUpdate" exact component={EditUpdate} />			
 				</Switch>
 		       </div>
 			

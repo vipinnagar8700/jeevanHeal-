@@ -9,73 +9,82 @@ import Bookingdata from '../../../../Context/Bookingdata';
 import { bookingsubmit, singledocter } from '../../../../API/Singledoctor/docter';
 import { Loginusercontext } from '../../../../Context/LoginUser';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { Registerc } from '../../../../Context/Registerauth';
 
 
 const Checkout = (props) => {
-	const {bookingdata,setbookingdata}=props
-	const [checkouta , setCheckouta] = useState([])
-	const [count , setCount] = useState(0)
+	const { bookingdata, setbookingdata } = props
+	const [checkouta, setCheckouta] = useState([])
+	const [count, setCount] = useState(0)
 	const history = useHistory();
-	
+	let {pat,setpat} = useContext(Registerc);
 
-	
-	useEffect(()=>{
-		singledocter(bookingdata.id).then((data)=>{
-			console.log(data.results,"data haia");
+console.log(pat,"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb sachhh")
+
+const {patient} =pat.User;
+const {fullname,email} = patient[0];
+console.log("bhgfdxghbjnkml,")
+if(!patient){
+	return<h1>........Loading</h1>
+}
+
+
+	useEffect(() => {
+		singledocter(bookingdata.id).then((data) => {
+			console.log(data.results, "data haia");
 			setCheckouta(data.results)
 		})
 
-		bookingsubmit(bookingdata).then((data)=>{
-			if(data){
+		bookingsubmit(bookingdata,patient[0].id
+			).then((data) => {
+			if (data) {
 
-				
-				console.log(data,"ye data haiiiiiiiiiiiiiiii");
-				
 
-setbookingdata({...bookingdata, sucess_doctername:checkouta.fullname, booking_id:data.booking_id})
+				console.log(data, "ye data haiiiiiiiiiiiiiiii");
+
+
+				setbookingdata({ ...bookingdata, sucess_doctername: checkouta.fullname, booking_id: data.booking_id })
 				data.booking_id && history.push("/patient/booking-success");
 			}
-			})
-		
-	},[count])
-	console.log(checkouta);
-	
-	const HandleClick = (values) => {
-		console.log("priyanka", values.email,values.name,values.phone,values.cardname,values.card_number)
+		})
 
-		setbookingdata({...bookingdata,name:values.name,email:values.email,phone:values.phone, card_number:values.card_number,doctor_id:bookingdata.id,patient_id:180})
-       setCount(count+1)
-	   setbookingdata({...bookingdata, sucess_doctername:checkouta.fullname, booking_id:data.booking_id})
-		
+	}, [count])
+	console.log(checkouta);
+
+	const HandleClick = (values) => {
+		console.log("priyanka", values.email, values.name, values.phone, values.cardname, values.card_number)
+
+		setbookingdata({ ...bookingdata, name: values.name, email: values.email, phone: values.phone, card_number: values.card_number, doctor_id: bookingdata.id, patient_id: 180 })
+		setCount(count + 1)
+		setbookingdata({ ...bookingdata, sucess_doctername: checkouta.fullname, booking_id: data.booking_id })
+
 	}
-	
+
 	const schema = yup.object().shape({
 		email: yup.string().email().required(),
-		name:yup.string().required(),
-		phone:yup.number().min(10).required(),
-		cardname:yup.string().required(),
-		card_number:yup.number().min(15).required()
+		name: yup.string().required(),
+		phone: yup.number().min(10).required(),
+		cardname: yup.string().required(),
+		card_number: yup.number().min(15).required()
 
 	})
-	if(!checkouta){
+	if (!checkouta) {
 		return <h1>Loading...</h1>
 	}
 
 
 
-	const { handleSubmit, values, handleChange, errors, handleBlur, touched, isValid, dirty} = useFormik({
+	const { handleSubmit, values, handleChange, errors, handleBlur, touched, isValid, dirty } = useFormik({
 		initialValues: {
-			name: "boby",
-			email: "baisla@gmail.com",
-			phone: "9873224576",
+			name: `${fullname}`,
+			email: `${email}`,
 			cardname: "",
 			card_number: "",
-			lastname: "Gujjar",
-			
+
 		},
-		onSubmit:HandleClick,
+		onSubmit: HandleClick,
 		validationSchema: schema,
-		validateOnMount:true
+		validateOnMount: true
 
 
 	});
@@ -88,7 +97,7 @@ setbookingdata({...bookingdata, sucess_doctername:checkouta.fullname, booking_id
 	}
 
 
-	
+
 	return (
 		<div>
 			<Header {...props} />
@@ -98,41 +107,41 @@ setbookingdata({...bookingdata, sucess_doctername:checkouta.fullname, booking_id
 						<div className="col-md-7 col-lg-8">
 							<div className="card">
 								<div className="card-body">
-									<form  onSubmit={handleSubmit}>
+									<form onSubmit={handleSubmit}>
 										<div className="info-widget">
 											<h4 className="card-title">Personal Information</h4>
 											<div className="row">
 												<div className="col-md-6 col-sm-12">
 													<div className="form-group card-label">
 														<label htmlFor='name'>First Name</label>
-														<input className="form-control" type="text" name="name" value={values.name} placeholder='name' onChange={handleChange}  onBlur={handleBlur} />
+														<input className="form-control" type="text" name="name" value={values.name} placeholder='name' onChange={handleChange} onBlur={handleBlur} />
 														{
-            touched.name && errors.name && <div className='text-danger'>{errors.name}</div>
-        }
+															touched.name && errors.name && <div className='text-danger'>{errors.name}</div>
+														}
 													</div>
 												</div>
 												<div className="col-md-6 col-sm-12 visibility-hidden">
 													<div className="form-group card-label">
 														<label htmlFor='lastname' >Last Name</label>
-														<input className="form-control" type="text"  name="lastname"  id='lastname' onChange={handleChange}  onBlur={handleBlur} value={values.lastname} />
+														<input className="form-control" type="text" name="lastname" id='lastname' onChange={handleChange} onBlur={handleBlur} value={values.lastname} />
 													</div>
 												</div>
 												<div className="col-md-6 col-sm-12">
 													<div className="form-group card-label">
 														<label htmlFor='email'>Email</label>
-														<input className="form-control" type="email" onChange={handleChange}  onBlur={handleBlur} id='email' name="email" value={values.email} />
+														<input className="form-control" type="email" onChange={handleChange} onBlur={handleBlur} id='email' name="email" value={values.email} />
 														{
-            touched.email && errors.email && <div className='text-danger'>{errors.email}</div>
-        }
+															touched.email && errors.email && <div className='text-danger'>{errors.email}</div>
+														}
 													</div>
 												</div>
 												<div className="col-md-6 col-sm-12">
 													<div className="form-group card-label">
 														<label htmlFor='phone'>Phone</label>
-														<input className="form-control" type="text"  onChange={handleChange}  onBlur={handleBlur} value={values.phone} id='phone' name='phone'/>
+														<input className="form-control" type="text" onChange={handleChange} onBlur={handleBlur} value={values.phone} id='phone' name='phone' />
 														{
-            touched.phone && errors.phone && <div className='text-danger'>{errors.phone}</div>
-        }
+															touched.phone && errors.phone && <div className='text-danger'>{errors.phone}</div>
+														}
 													</div>
 												</div>
 											</div>
@@ -143,7 +152,7 @@ setbookingdata({...bookingdata, sucess_doctername:checkouta.fullname, booking_id
 											<h4 className="card-title">Payment Method</h4>
 											<div className="payment-list">
 												<label className="payment-radio credit-card-option">
-													<input type="radio" name="radio" defaultChecked  />
+													<input type="radio" name="radio" defaultChecked />
 													<span className="checkmark"></span>
 													Credit card
 												</label>
@@ -151,26 +160,26 @@ setbookingdata({...bookingdata, sucess_doctername:checkouta.fullname, booking_id
 													<div className="col-md-6">
 														<div className="form-group card-label">
 															<label htmlFor="cardname">Name on Card</label>
-															<input className="form-control" id="cardname" type="text"  onChange={handleChange}  onBlur={handleBlur} name="cardname" value={values.cardname}/>
+															<input className="form-control" id="cardname" type="text" onChange={handleChange} onBlur={handleBlur} name="cardname" value={values.cardname} />
 															{
-            touched.cardname && errors.cardname && <div className='text-danger'>{errors.cardname}</div>
-        }
+																touched.cardname && errors.cardname && <div className='text-danger'>{errors.cardname}</div>
+															}
 														</div>
 													</div>
 													<div className="col-md-6">
 														<div className="form-group card-label">
 															<label htmlFor="card_number">Card Number</label>
 															<input className="form-control" id="card_number"
-																placeholder="1234  5678  9876  5432" type="text"  onChange={handleChange} name='card_number'  onBlur={handleBlur} value={values.card_number}/>
-																{
-            touched.card_number && errors.card_number && <div className='text-danger'>{errors.card_number}</div>
-        }
+																placeholder="1234  5678  9876  5432" type="text" onChange={handleChange} name='card_number' onBlur={handleBlur} value={values.card_number} />
+															{
+																touched.card_number && errors.card_number && <div className='text-danger'>{errors.card_number}</div>
+															}
 														</div>
 													</div>
 													<div className="col-md-4">
 														<div className="form-group card-label">
 															<label htmlFor="expiry_month">Expiry Month</label>
-															<input className="form-control" id="expiry_month" placeholder="MM" type="text"  />
+															<input className="form-control" id="expiry_month" placeholder="MM" type="text" />
 														</div>
 													</div>
 													<div className="col-md-4">
@@ -182,7 +191,7 @@ setbookingdata({...bookingdata, sucess_doctername:checkouta.fullname, booking_id
 													<div className="col-md-4">
 														<div className="form-group card-label">
 															<label htmlFor="cvv">CVV</label>
-															<input className="form-control" id="cvv" type="text"  />
+															<input className="form-control" id="cvv" type="text" />
 														</div>
 													</div>
 												</div>
@@ -205,7 +214,7 @@ setbookingdata({...bookingdata, sucess_doctername:checkouta.fullname, booking_id
 											<div className="submit-section mt-4">
 												<button type="submit"
 													className="btn btn-primary submit-btn"
-													 disabled={!dirty && !isValid}>Confirm and Pay</button>
+													disabled={!dirty && !isValid}>Confirm and Pay</button>
 											</div>
 										</div>
 									</form>

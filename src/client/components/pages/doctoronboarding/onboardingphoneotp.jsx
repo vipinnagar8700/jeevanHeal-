@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory   } from "react-router-dom";
 import OnboardingSidebar from "./onboardingsidebar";
 import { onelogo, oneslide , edit, up_img } from "./img";
 const onboardingphoneotp = (props) => {
@@ -23,7 +23,7 @@ const onboardingphoneotp = (props) => {
   const [img, setSelectedImg] = useState();
   const [id_img, setSelectedId_img] = useState();
   const [reg_img, setSelectedReg_img] = useState();
-  
+  let history = useHistory();
   // const [token, setToken] = useState("");
   // const [img, setImg] = useState("");
   // const [id_img, setId_img] = useState("");

@@ -86,9 +86,7 @@ const Categories = (props) => {
    const [deleteStatus, setDeleteStatus] = useState([]);
    const handleDelete = (id) => {
       fetch('https://jeevan.studiomyraa.com/api/delete_category/' + id, { method: 'DELETE' })
-         .then((res) => res.json())
-         .then((json) => setDeleteStatus(json))
-         .catch((e) => console.log(e))
+         
    }
    if (deleteStatus.status == 'success') {
       getData()

@@ -151,6 +151,7 @@ const AppUniversal = function (props) {
 					<Route path="/admin/data-tables" exact component={DataTables} />
 					<Route path="/admin/product-category" exact component={ProductCategories} />
 					<Route path="/admin/pastappointments" exact component={Pastappointments} />
+					{/* LAb test Url */}
 				</Switch>
 		       </div>
 			

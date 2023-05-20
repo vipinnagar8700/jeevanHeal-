@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useHistory } from 'react-router-dom';
 import SidebarNav from '../sidebar';
 import { Modal } from 'react-bootstrap';
 import { Row, Col, Card, Media } from "react-bootstrap";
@@ -9,9 +9,12 @@ import 'react-data-table-component-extensions/dist/index.css';
 import { Productss, Product1, Product2, Product3, Product4, Product5, Product6 } from "./image"
 import FeatherIcon from 'feather-icons-react';
 import Cookies from 'js-cookie';
+import axios from 'axios';
+import { deleteSupplier } from '../../../PharmacyApi\'s/Pharmacy';
 
 const Supplier = (props) => {
-
+  let history = useHistory();
+  const[count,setcount] = useState(0);
   const [post, setPost] = useState([])
   const getData = () => {
     let token = Cookies.get("pharmToken")
@@ -30,17 +33,33 @@ const Supplier = (props) => {
       .then((json) => setPost(json.data))
       .catch((e) => console.log(e))
   }
+  const handleDelete = (id) => {
+    setcount(count+1);
+    const data = deleteSupplier(id);
+    if (data) {
+      data.then((data) => {
+        setEditProductData(data.data);
+      
+        console.log(data, "rvckjewdsvbhj");
+      })
+    }
 
+  }
 
   useEffect(() => {
     getData()
-  }, [])
+
+  }, [count])
   console.log(post)
   const [show1, setShow1] = useState(false);
   const toggleFilterMenu1 = () => {
     console.log(show1)
     setShow1(!show1)
   }
+
+  // Delete Data
+  
+
 
 
   // Table Start
@@ -96,15 +115,16 @@ const Supplier = (props) => {
       name: 'Action',
       selector: row => row.action,
       sortable: true,
-      cell: row  => (<div className="actions">
+      cell: row => (<div className="actions">
         <Link to={`/pharmacyadmin/edit-supplier/${row.id}`} className="text-black">
           <i className="me-1"><FeatherIcon icon="edit-3" /></i> Edit
         </Link>
         <Link
           className="text-danger"
+          data-tag="allowRowEvents"
           to="#"
-          data-bs-toggle="modal"
-          data-bs-target="#delete_modal"
+          onClick={e => handleDelete(row.id)}
+
 
         >
           <i className="me-1"><FeatherIcon icon="trash-2" /></i> Delete
@@ -151,7 +171,7 @@ const Supplier = (props) => {
     },
   };
 
-
+  const onRowClicked = (row, event) => { };
   const tableData = {
     columns,
     data,
@@ -241,23 +261,7 @@ const Supplier = (props) => {
                   <div className="del-icon"><i><FeatherIcon icon="x-circle" /></i></div>
                 </button>
               </div>
-              <div className="modal-body">
-                <div className="delete-wrap text-center">
-                  <div className="del-icon">
-                    <div className="del-icon"><i className='delete-icon'><FeatherIcon icon="x-circle" /></i></div>
-                  </div>
-                  <h2>Sure you Want to delete</h2>
-                  <p>“Supplier”</p>
-                  <div className="submit-section">
-                    <Link to="/pharmacyadmin/categories" className="btn btn-success me-2">
-                      Yes
-                    </Link>
-                    <a href="#" className="btn btn-danger" data-bs-dismiss="modal">
-                      No
-                    </a>
-                  </div>
-                </div>
-              </div>
+
             </div>
           </div>
         </div>
